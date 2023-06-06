@@ -56,26 +56,28 @@ public class App {
 
         em.getTransaction().commit();
         em.close();
-//
-//        em = emf.createEntityManager();
-//        em.getTransaction().begin();
-//
+
+        em = emf.createEntityManager();
+        em.getTransaction().begin();
+
 //        // c) TODO: Flights using 747 planes that don't belong to Star Alliance
-//        System.out.println("Question C:");
-//        flights = em.createQuery("from Flight ", Flight.class).getResultList();
-//        System.out.printf("%-9s%-31s%-31s\n", "Flight:", "Departs:",
-//                "Arrives:");
-//        for (Flight flight : flights) {
-//            System.out.printf("%-7s  %-12s %7s %8s  %-12s %7s %8s\n",
-//                    flight.getFlightnr(), flight.getOrigin().getCity(),
-//                    flight.getDepartureDate(), flight.getDepartureTime(),
-//                    flight.getDestination().getCity(),
-//                    flight.getArrivalDate(), flight.getArrivalTime());
-//        }
-//        System.out.println();
-//
-//        em.getTransaction().commit();
-//        em.close();
+        System.out.println("Question C:");
+        flights = em.createQuery("select f from Flight f " +
+                " JOIN f.airplane as a " +
+                "where a.model = '747' and f.airline.name != 'Star Alliance'", Flight.class).getResultList();
+        System.out.printf("%-9s%-31s%-31s\n", "Flight:", "Departs:",
+                "Arrives:");
+        for (Flight flight : flights) {
+            System.out.printf("%-7s  %-12s %7s %8s  %-12s %7s %8s\n",
+                    flight.getFlightnr(), flight.getOrigin().getCity(),
+                    flight.getDepartureDate(), flight.getDepartureTime(),
+                    flight.getDestination().getCity(),
+                    flight.getArrivalDate(), flight.getArrivalTime());
+        }
+        System.out.println();
+
+        em.getTransaction().commit();
+        em.close();
 //
 //        em = emf.createEntityManager();
 //        em.getTransaction().begin();
