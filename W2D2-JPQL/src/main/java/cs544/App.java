@@ -40,20 +40,22 @@ public class App {
         em.getTransaction().commit();
         em.close();
 
-//        em = emf.createEntityManager();
-//        em.getTransaction().begin();
-//
+        em = emf.createEntityManager();
+        em.getTransaction().begin();
+
 //        // b) TODO: All airlines that use A380 airplanes
-//        System.out.println("Question B:");
-//        List<Airline> airlines = em.createQuery("from Airline ", Airline.class).getResultList();
-//        System.out.println("Airlines that use A380s:");
-//        for (Airline airline : airlines) {
-//            System.out.println(airline.getName());
-//        }
-//        System.out.println();
-//
-//        em.getTransaction().commit();
-//        em.close();
+        System.out.println("Question B:");
+        List<Airline> airlines = em.createQuery("select a from Airline a " +
+                " JOIN a.flights as f " +
+                " where f.airplane.model = 'A380'", Airline.class).getResultList();
+        System.out.println("Airlines that use A380s:");
+        for (Airline airline : airlines) {
+            System.out.println(airline.getName());
+        }
+        System.out.println();
+
+        em.getTransaction().commit();
+        em.close();
 //
 //        em = emf.createEntityManager();
 //        em.getTransaction().begin();
