@@ -1,5 +1,6 @@
 package cs544;
 
+import java.util.Date;
 import java.util.List;
 
 import cs544.model.Airline;
@@ -7,10 +8,8 @@ import cs544.model.Flight;
 import java.text.DateFormat;
 import java.util.Locale;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
-import jakarta.persistence.TypedQuery;
+import jakarta.persistence.*;
+
 
 public class App {
 
@@ -78,30 +77,38 @@ public class App {
 
         em.getTransaction().commit();
         em.close();
-//
-//        em = emf.createEntityManager();
-//        em.getTransaction().begin();
-//
-//        DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT,
-//                Locale.US);
-//        DateFormat tf = DateFormat.getTimeInstance(DateFormat.SHORT,
-//                Locale.US);
-//
-//        // d) TODO: All flights leaving before 12pm on 08/07/2009
-//        System.out.println("Question D:");
-//        TypedQuery<Flight> query = em.createQuery("from Flight ", Flight.class);
-//        flights = query.getResultList();
-//        System.out.printf("%-9s%-31s%-31s\n", "Flight:", "Departs:",
-//                "Arrives:");
-//        for (Flight flight : flights) {
-//            System.out.printf("%-7s  %-12s %7s %8s  %-12s %7s %8s\n",
-//                    flight.getFlightnr(), flight.getOrigin().getCity(),
-//                    flight.getDepartureDate(), flight.getDepartureTime(),
-//                    flight.getDestination().getCity(),
-//                    flight.getArrivalDate(), flight.getArrivalTime());
-//        }
-//        System.out.println();
-//        em.getTransaction().commit();
-//        em.close();
+
+        em = emf.createEntityManager();
+        em.getTransaction().begin();
+
+        DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT,
+                Locale.US);
+        DateFormat tf = DateFormat.getTimeInstance(DateFormat.SHORT,
+                Locale.US);
+
+        Date date = df.parse("08/07/2009");
+        Date time = tf.parse("12:00 pm");
+
+
+        // d) TODO: All flights leaving before 12pm on 08/07/2009
+        System.out.println("Question D:");
+        Query query = em.createQuery("from Flight as f " +
+                " where f.departureDate = :date and f.departureTime < :time", Flight.class);
+        query.setParameter("date", date, TemporalType.DATE);
+        query.setParameter("time", time, TemporalType.TIME);
+
+        flights = query.getResultList();
+        System.out.printf("%-9s%-31s%-31s\n", "Flight:", "Departs:",
+                "Arrives:");
+        for (Flight flight : flights) {
+            System.out.printf("%-7s  %-12s %7s %8s  %-12s %7s %8s\n",
+                    flight.getFlightnr(), flight.getOrigin().getCity(),
+                    flight.getDepartureDate(), flight.getDepartureTime(),
+                    flight.getDestination().getCity(),
+                    flight.getArrivalDate(), flight.getArrivalTime());
+        }
+        System.out.println();
+        em.getTransaction().commit();
+        em.close();
     }
 }
